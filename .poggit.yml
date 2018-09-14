@@ -1,8 +1,0 @@
---- # Poggit-CI Manifest. Open the CI at https://poggit.pmmp.io/ci/thebigsmileXD/BossAnnouncement
-projects:
-  BossAnnouncement:
-    path: ""
-    libs:
-      - src: thebigsmilexd/BossBarAPI/BossBarAPI
-        version: ^5.0.0
-...
