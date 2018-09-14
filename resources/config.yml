@@ -5,7 +5,8 @@ head-message: "BossBar"
 # Otherwise it takes the percentage that was there before.
 # Example for a 25% filled: "{25%}This is a quarter filled bar >>"
 changing-messages:
- - "{100%}&6&lBossAnnouncement"
+ - "{0%}&6&lBossAnnouncement"
+ - "{100%}&e%IP% &b%PING%"
 # How fast the messages switch in seconds
 change-speed: 5
 # This changes the behaviour for multiple worlds
