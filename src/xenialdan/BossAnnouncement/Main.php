@@ -21,11 +21,11 @@ class Main extends PluginBase implements Listener{
 		$this->headBar = $this->getConfig()->get("head-message", "");
 		$this->cmessages = $this->getConfig()->get("changing-messages", []);
 		$this->changeSpeed = $this->getConfig()->get("change-speed", 0);
-		if($this->killchat = $this->getServer()->getPluginManager()->getPlugin("KillChat")) $this->getLogger()->notice("KillChat found");
-		if($this->economyapi = $this->getServer()->getPluginManager()->getPlugin("EconomyAPI")) $this->getLogger()->notice("EconomyAPI found");
-		if($this->pureperms = $this->getServer()->getPluginManager()->getPlugin("PurePerms")) $this->getLogger()->notice("PurePerms found");
+		if($this->killchat = $this->getServer()->getPluginManager()->getPlugin("KillChat")) $this->getLogger()->notice("KillChat was found");
+		if($this->economyapi = $this->getServer()->getPluginManager()->getPlugin("EconomyAPI")) $this->getLogger()->notice("EconomyAPI was found");
+		if($this->pureperms = $this->getServer()->getPluginManager()->getPlugin("PurePerms")) $this->getLogger()->notice("PurePerms was found");
 		if($this->changeSpeed > 0) $this->getScheduler()->scheduleRepeatingTask(new SendTask($this), 20 * $this->changeSpeed);
-		$this->getLogger()->info("Enabled");
+		$this->getLogger()->info(TextFormat::GREEN."Enabled");
 	}
 
 	public function onJoin(PlayerJoinEvent $ev){
