@@ -1,12 +1,5 @@
 <?php
 
-/*
- * BossAnnouncement
- * A plugin by XenialDan aka thebigsmileXD
- * http://github.com/thebigsmileXD/BossAnnouncement
- * A simple boss bar tile plugin using my BossBarAPI
- */
-
 namespace xenialdan\BossAnnouncement;
 
 use pocketmine\event\entity\EntityLevelChangeEvent;
@@ -20,14 +13,8 @@ use xenialdan\BossBarAPI\API;
 
 class Main extends PluginBase implements Listener{
 	public $entityRuntimeId = null, $headBar = '', $cmessages = [], $changeSpeed = 0, $i = 0;
-	/** @var API $API */
-	public $API;
 
 	public function onEnable(){
-		if (($this->API = $this->getServer()->getPluginManager()->getPlugin("BossBarAPI")) === null){
-			$this->getServer()->getPluginManager()->disablePlugin($this);
-			return;
-		}
 		$this->saveDefaultConfig();
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		$this->headBar = $this->getConfig()->get('head-message', '');
@@ -39,7 +26,7 @@ class Main extends PluginBase implements Listener{
 	public function onJoin(PlayerJoinEvent $ev){
 		if (in_array($ev->getPlayer()->getLevel(), $this->getWorlds())){
 			if ($this->entityRuntimeId === null){
-				$this->entityRuntimeId = API::addBossBar([$ev->getPlayer()], 'Loading..');
+				$this->entityRuntimeId = API::addBossBar($ev->getPlayer());
 				$this->getServer()->getLogger()->debug($this->entityRuntimeId === NULL ? 'Couldn\'t add BossAnnouncement' : 'Successfully added BossAnnouncement with EID: ' . $this->entityRuntimeId);
 			} else{
 				API::sendBossBarToPlayer($ev->getPlayer(), $this->entityRuntimeId, $this->getText($ev->getPlayer()));
@@ -47,14 +34,12 @@ class Main extends PluginBase implements Listener{
 			}
 		}
 	}
-	//////
-	//fix mode 2
 
 	public function onLevelChange(EntityLevelChangeEvent $ev){
 		if ($ev->isCancelled() || !$ev->getEntity() instanceof Player) return;
 		if (in_array($ev->getTarget(), $this->getWorlds())){
 			if ($this->entityRuntimeId === null){
-				$this->entityRuntimeId = API::addBossBar([$ev->getEntity()], 'Loading..');
+				$this->entityRuntimeId = API::addBossBar($ev->getEntity());
 				$this->getServer()->getLogger()->debug($this->entityRuntimeId === NULL ? 'Couldn\'t add BossAnnouncement' : 'Successfully added BossAnnouncement with EID: ' . $this->entityRuntimeId);
 			} else{
 				API::removeBossBar([$ev->getEntity()], $this->entityRuntimeId);
@@ -105,67 +90,60 @@ class Main extends PluginBase implements Listener{
 	 * @return string
 	 */
 	public function formatText(Player $player, string $text){
-		$text = str_replace("{display_name}", $player->getDisplayName(), $text);
-		$text = str_replace("{name}", $player->getName(), $text);
-		$text = str_replace("{x}", $player->getFloorX(), $text);
-		$text = str_replace("{y}", $player->getFloorY(), $text);
-		$text = str_replace("{z}", $player->getFloorZ(), $text);
-		$text = str_replace("{world}", (($levelname = $player->getLevel()->getName()) === false ? "" : $levelname), $text);
-		$text = str_replace("{level_players}", count($player->getLevel()->getPlayers()), $text);
-		$text = str_replace("{server_players}", count($player->getServer()->getOnlinePlayers()), $text);
-		$text = str_replace("{server_max_players}", $player->getServer()->getMaxPlayers(), $text);
-		$text = str_replace("{hour}", date('H'), $text);
-		$text = str_replace("{minute}", date('i'), $text);
-		$text = str_replace("{second}", date('s'), $text);
-		// preg_match_all ("/(\{.*?\})/ig", $text, $brackets);
-
-		$text = str_replace("{BLACK}", "&0", $text);
-		$text = str_replace("{DARK_BLUE}", "&1", $text);
-		$text = str_replace("{DARK_GREEN}", "&2", $text);
-		$text = str_replace("{DARK_AQUA}", "&3", $text);
-		$text = str_replace("{DARK_RED}", "&4", $text);
-		$text = str_replace("{DARK_PURPLE}", "&5", $text);
-		$text = str_replace("{GOLD}", "&6", $text);
-		$text = str_replace("{GRAY}", "&7", $text);
-		$text = str_replace("{DARK_GRAY}", "&8", $text);
-		$text = str_replace("{BLUE}", "&9", $text);
-		$text = str_replace("{GREEN}", "&a", $text);
-		$text = str_replace("{AQUA}", "&b", $text);
-		$text = str_replace("{RED}", "&c", $text);
-		$text = str_replace("{LIGHT_PURPLE}", "&d", $text);
-		$text = str_replace("{YELLOW}", "&e", $text);
-		$text = str_replace("{WHITE}", "&f", $text);
-		$text = str_replace("{OBFUSCATED}", "&k", $text);
-		$text = str_replace("{BOLD}", "&l", $text);
-		$text = str_replace("{STRIKETHROUGH}", "&m", $text);
-		$text = str_replace("{UNDERLINE}", "&n", $text);
-		$text = str_replace("{ITALIC}", "&o", $text);
-		$text = str_replace("{RESET}", "&r", $text);
-
-		$text = str_replace("&0", TextFormat::BLACK, $text);
-		$text = str_replace("&1", TextFormat::DARK_BLUE, $text);
-		$text = str_replace("&2", TextFormat::DARK_GREEN, $text);
-		$text = str_replace("&3", TextFormat::DARK_AQUA, $text);
-		$text = str_replace("&4", TextFormat::DARK_RED, $text);
-		$text = str_replace("&5", TextFormat::DARK_PURPLE, $text);
-		$text = str_replace("&6", TextFormat::GOLD, $text);
-		$text = str_replace("&7", TextFormat::GRAY, $text);
-		$text = str_replace("&8", TextFormat::DARK_GRAY, $text);
-		$text = str_replace("&9", TextFormat::BLUE, $text);
-		$text = str_replace("&a", TextFormat::GREEN, $text);
-		$text = str_replace("&b", TextFormat::AQUA, $text);
-		$text = str_replace("&c", TextFormat::RED, $text);
-		$text = str_replace("&d", TextFormat::LIGHT_PURPLE, $text);
-		$text = str_replace("&e", TextFormat::YELLOW, $text);
-		$text = str_replace("&f", TextFormat::WHITE, $text);
-		$text = str_replace("&k", TextFormat::OBFUSCATED, $text);
-		$text = str_replace("&l", TextFormat::BOLD, $text);
-		$text = str_replace("&m", TextFormat::STRIKETHROUGH, $text);
-		$text = str_replace("&n", TextFormat::UNDERLINE, $text);
-		$text = str_replace("&o", TextFormat::ITALIC, $text);
-		$text = str_replace("&r", TextFormat::RESET, $text);
-
-		return $text;
+		return str_replace(array(
+			"&",
+			"%TPS%",
+			"%LOAD%",
+			"%UPTIME",
+			"%MOTD%",
+			"%ONLINE%",
+			"%MAX_ONLINE%",
+			"%SERVER_IP%",
+			"%IP%",
+			"%PING%",
+			"%NAME%",
+			"%KILLS%",
+			"%DEATHS%",
+			"%GROUP%",
+			"%MONEY%",
+			"%LEVEL_NAME%",
+			"%LEVEL_PLAYERS%",
+			"%ITEM_ID%",
+			"%ITEM_META%",
+			"%X%",
+			"%Y%",
+			"%Z%",
+			"%HOUR%",
+			"%MINUTE%",
+			"%SECOND%"
+		), array(
+			"\xc2\xa7",
+			$this->getServer()->getTicksPerSecond(),
+			$this->getServer()->getTickUsage(),
+			$this->getUptime(),
+			$this->getServer()->getMotd(),
+			count($this->getServer()->getOnlinePlayers()),
+			$this->getServer()->getMaxPlayers(),
+			$this->getServer()->getIp(),
+			$player->getAddress(),
+			$player->getPing(),
+			$player->getName(),
+			if($this->killchat) $this->killchat->getKills($player->getName()) else "NoPlugin",
+			if($this->killchat) $this->killchat->getDeaths($player->getName()) else "NoPlugin",
+			$this->getDeaths($player),
+			if($this->pureperms) $this->pureperms->getUserDataMgr()->getGroup($player)->getName() else "NoPlugin",
+			if($this->economyapi) $this->economyapi->myMoney($player) else "NoPlugin",
+			$player->getLevel()->getName(),
+			count($player->getLevel()->getPlayers()),
+			if($player->getInventory !== null) $player->getInventory()->getItemInHand()->getId() else 0,
+			if($player->getInventory !== null) $player->getInventory()->getItemInHand()->getDamage() else 0,
+			(int)$player->getX(),
+			(int)$player->getY(),
+			(int)$player->getZ(),
+			date('H'),
+			date("i"),
+			date("s")
+		), $text);
 	}
 
 	/** @return Level[] $worlds */
