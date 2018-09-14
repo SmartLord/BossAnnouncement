@@ -2,15 +2,17 @@
 
 namespace xenialdan\BossAnnouncement;
 
-use pocketmine\scheduler\PluginTask;
+use pocketmine\scheduler\Task;
 
-class SendTask extends PluginTask{
-
-	public function onRun(int $currentTick){
-		$this->getOwner()->sendBossBar();
+class SendTask extends Task{
+	
+	private $plugin;
+	
+	public function __construct(Main $plugin){
+		$this->plugin = $plugin;
 	}
-
-	public function cancel(){
-		$this->getHandler()->cancel();
+	
+	public function onRun(int $currentTick){
+		$this->plugin->sendBossBar();
 	}
 }
