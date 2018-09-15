@@ -3,7 +3,7 @@ Poggit download/information: [![Poggit-CI](https://poggit.pmmp.io/ci.badge/Smart
 
 Changing BossBar Texts using BossBarAPI
 
-##Formatting strings
+## Formatting strings
 - %TPS%
 - %LOAD%
 - %UPTIME
