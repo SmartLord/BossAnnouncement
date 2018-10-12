@@ -31,7 +31,7 @@ class Main extends PluginBase implements Listener{
 	public function onJoin(PlayerJoinEvent $ev){
 		if (in_array($ev->getPlayer()->getLevel(), $this->getWorlds())){
 			if ($this->entityRuntimeId === null){
-				$this->entityRuntimeId = API::addBossBar([$ev->getPlayer()]);
+				$this->entityRuntimeId = API::addBossBar([$ev->getPlayer()], "Loading...");
 				$this->getServer()->getLogger()->debug($this->entityRuntimeId === NULL ? "Couldn\"t add BossAnnouncement" : "Successfully added BossAnnouncement with EID: " . $this->entityRuntimeId);
 			} else{
 				API::sendBossBarToPlayer($ev->getPlayer(), $this->entityRuntimeId, $this->getText($ev->getPlayer()));
